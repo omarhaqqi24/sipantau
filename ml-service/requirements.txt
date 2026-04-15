@@ -1,5 +1,5 @@
-fastapi
+fastapi==0.135.3
 uvicorn
-pydantic
+pydantic==2.13.0
 numpy
 scikit-learn==1.7.1

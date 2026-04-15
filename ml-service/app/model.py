@@ -40,9 +40,10 @@ def predict(features):
     lag3 = hpt2
     lag4 = hpt3
     rolling_mean = (hps0 + hps1) / 2
-    trend = trend_today + 1
+    # rolling_mean1 = rolling_mean // FOR DEBUGGING
+    trend1 = trend_today + 1
     
-    X1 = np.array([[trend, lag3, bulan, rolling_mean, lag2, lag4]])
+    X1 = np.array([[trend1, lag3, bulan, rolling_mean, lag2, lag4]])
     pred1 = model.predict(X1)[0]
     
     # PREDICT H+2
@@ -51,9 +52,10 @@ def predict(features):
     lag3 = hpt1
     lag4 = hpt2
     rolling_mean = (pred1 + hps0) / 2
-    trend = trend + 1
+    # rolling_mean2 = rolling_mean // FOR DEBUGGING
+    trend2 = trend1 + 1
     
-    X2 = np.array([[trend, lag3, bulan, rolling_mean, lag2, lag4]])
+    X2 = np.array([[trend2, lag3, bulan, rolling_mean, lag2, lag4]])
     pred2 = model.predict(X2)[0]
     
     # PREDICT H+3
@@ -63,13 +65,35 @@ def predict(features):
     lag4 = hpt1
     
     rolling_mean = (pred2 + pred1) / 2
-    trend = trend + 1
+    # rolling_mean3 = rolling_mean // FOR DEBUGGING
+    trend3 = trend2 + 1
     
-    X3 = np.array([[trend, lag3, bulan, rolling_mean, lag2, lag4]])
+    X3 = np.array([[trend3, lag3, bulan, rolling_mean, lag2, lag4]])
     pred3 = model.predict(X3)[0]
     
     return {
         "hari_1": pred1,
         "hari_2": pred2,
-        "hari_3": pred3
+        "hari_3": pred3,
     }
+    
+    # DEBUGGING MODE
+    
+    # return {
+    #     "hari_1": pred1,
+    #     "hari_2": pred2,
+    #     "hari_3": pred3,
+    #     "trend_1": trend1,
+    #     "trend_2": trend2,
+    #     "trend_3": trend3,
+    #     "rolling_mean1": rolling_mean1,
+    #     "rolling_mean2": rolling_mean2,
+    #     "rolling_mean3": rolling_mean3,
+    #     "hpt0": hpt0,
+    #     "hpt1": hpt1,
+    #     "hpt2": hpt2,
+    #     "hpt3": hpt3,
+    #     "hps0": hps0,
+    #     "hps1": hps1,
+    #     "hps2": hps2,
+    # }

@@ -33,6 +33,8 @@ services:
   ml:
     build: ./ml-service
     container_name: ml-service
+    volumes:
+    - ./ml-service:/app
 
 volumes:
   mysql_data:

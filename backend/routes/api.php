@@ -9,12 +9,14 @@ use App\Http\Controllers\KomoditasController;
 use App\Http\Controllers\KetersediaanHarianController;
 use App\Http\Controllers\PanenController;
 use App\Http\Controllers\PasarController;
+use App\Http\Controllers\PredictController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
 // })->middleware('auth:sanctum');
 
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/predict', [PredictController::class, 'index']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
