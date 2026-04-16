@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Komoditas;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -26,7 +27,11 @@ class DatabaseSeeder extends Seeder
         $this->call(
                 // UserSeeder::class
 
-                RolePermissionSeeder::class
+            RolePermissionSeeder::class
+        );
+
+        $this->call(
+            KomoditasSeeder::class
         );
     }
 }
