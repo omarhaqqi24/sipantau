@@ -18,7 +18,7 @@ with open(MODEL_PATH, "rb") as f:
     else:
         logger.info("Model loaded successfully")
 
-def predict(features):
+def predict(features, tanggal):
     feature = features[0]
     
     hpt0 = feature[0] # Hari ini
@@ -30,7 +30,7 @@ def predict(features):
     hps1 = feature[5] # H-1
     hps2 = feature[6] # H-2
     
-    today = datetime.now()
+    today = tanggal
     bulan = today.month
     trend_today = (today - START_DATE).days + 1
     
@@ -75,6 +75,7 @@ def predict(features):
         "hari_1": pred1,
         "hari_2": pred2,
         "hari_3": pred3,
+        "today": today.isoformat()
     }
     
     # DEBUGGING MODE

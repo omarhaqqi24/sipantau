@@ -9,11 +9,14 @@ class IrisRequest(BaseModel):
     harga_pasar_h_min_0: float
     harga_pasar_h_min_1: float
     harga_pasar_h_min_2: float
+    
+    tanggal: str
 
 class PredictionResponse(BaseModel):
     hari_1: float
     hari_2: float
     hari_3: float
+    today: str
     
     # DEBUGGING MODE
     # hari_1: float

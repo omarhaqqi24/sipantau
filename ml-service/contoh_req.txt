@@ -1,0 +1,10 @@
+curl -X POST "http://ml-service:8001/predict" -H "Content-Type: application/json" -d '{
+  "harga_petani_h_min_0": 39000,
+  "harga_petani_h_min_1": 39000,
+  "harga_petani_h_min_2": 39000,
+  "harga_petani_h_min_3": 39000,
+  "harga_pasar_h_min_0": 39000,
+  "harga_pasar_h_min_1": 39000,
+  "harga_pasar_h_min_2": 39000,
+  "tanggal": "2026-04-15T00:00:00.000000Z",
+}'

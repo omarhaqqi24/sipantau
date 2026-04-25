@@ -24,7 +24,7 @@ class PredictController extends Controller
             $pasar = HargaPasarHarian::where('komoditas_id', $validated['komoditas_id'])
                 ->where('pasar_id', $validated['pasar_id'])
                 ->orderBy('tanggal', 'desc')
-                ->take(3)
+                ->take(4)
                 ->get();
             
             $petani = HargaPetaniHarian::where('komoditas_id', $validated['komoditas_id'])
@@ -45,6 +45,8 @@ class PredictController extends Controller
                 "harga_pasar_h_min_0" => $pasar[0]->harga_pasar,
                 "harga_pasar_h_min_1" => $pasar[1]->harga_pasar,
                 "harga_pasar_h_min_2" => $pasar[2]->harga_pasar,
+
+                "tanggal" => $pasar[0]->tanggal
             ];
 
             $response = Http::post('http://ml-service:8001/predict', $data);
@@ -53,7 +55,23 @@ class PredictController extends Controller
                 return $this->error('Gagal tersambung ke layanan ML', 500);
             }
 
-            return $this->success($response->json(), 'Prediksi Harga Berhasil');
+            $result = [
+                "tanggal" => [
+                    $pasar[0]->tanggal,
+                    $pasar[1]->tanggal,
+                    $pasar[2]->tanggal,
+                    $pasar[3]->tanggal,
+                ],
+                "harga_pasar" => [
+                    "harga_pasar_h_min_0" => $pasar[0]->harga_pasar,
+                    "harga_pasar_h_min_1" => $pasar[1]->harga_pasar,
+                    "harga_pasar_h_min_2" => $pasar[2]->harga_pasar,
+                    "harga_pasar_h_min_3" => $pasar[3]->harga_pasar,
+                ],
+                "prediksi" => $response->json()
+            ];
+
+            return $this->success($result, 'Prediksi Harga Berhasil');
         } catch (Throwable $e) {
             return $this->error($e->getMessage());
         }
