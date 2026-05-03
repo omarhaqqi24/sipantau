@@ -16,7 +16,6 @@ use App\Http\Controllers\PredictController;
 // })->middleware('auth:sanctum');
 
 Route::post('/login', [AuthController::class, 'login']);
-Route::get('/predict', [PredictController::class, 'index']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
@@ -45,6 +44,10 @@ Route::middleware('auth:sanctum')->group(function () {
     // Harga Petani Harian
     Route::post('/harga-petani', [HargaPetaniHarianController::class, 'store'])
         ->middleware('permission:create_harga_petani');
+    
+    // Prediksi Harga Pasar
+    Route::get('/predict', [PredictController::class, 'index'])
+        ->middleware('permission:view_prediksi');
     
     Route::middleware('role:admin')->group(function () {
         // Register
