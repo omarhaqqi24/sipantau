@@ -107,7 +107,7 @@ class PredictController extends Controller
                         "hari_1" => $response->json()['prediksi'][0],
                         "hari_2" => $response->json()['prediksi'][1],
                         "hari_3" => $response->json()['prediksi'][2],
-                        "today" => now()->toISOString()
+                        "today" => $rows[9]->tanggal,
                     ]
                 ];
 
