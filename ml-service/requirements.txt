@@ -1,5 +1,8 @@
-fastapi==0.135.3
+fastapi
 uvicorn
-pydantic==2.13.0
+torch
+transformers
+accelerate
 numpy
-scikit-learn==1.7.1
+git+https://github.com/amazon-science/chronos-forecasting.git
+pandas

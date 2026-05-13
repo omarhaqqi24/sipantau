@@ -34,7 +34,7 @@ services:
     build: ./ml-service
     container_name: ml-service
     volumes:
-    - ./ml-service:/app
+      - ./ml-service:/app
 
 volumes:
   mysql_data:

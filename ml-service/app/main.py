@@ -1,40 +1,42 @@
-from fastapi import FastAPI, HTTPException
-from app.model import predict
-from app.schema import IrisRequest, PredictionResponse
+from fastapi import FastAPI
+from pydantic import BaseModel
+
 import numpy as np
-from datetime import datetime
+
+from app.model import pipeline
 
 app = FastAPI()
 
-@app.get("/")
-def root():
-    return {"message": "ML is service running"}
-
-@app.post("/predict", response_model=PredictionResponse)
-def predict_api(data: IrisRequest):
-    try:
-        tgl = datetime.fromisoformat(data.tanggal.replace("Z", "+00:00")).replace(tzinfo=None)
-        features = np.array([[
-            data.harga_petani_h_min_0,
-            data.harga_petani_h_min_1,
-            data.harga_petani_h_min_2,
-            data.harga_petani_h_min_3,
-            data.harga_pasar_h_min_0,
-            data.harga_pasar_h_min_1,
-            data.harga_pasar_h_min_2,
-        ]], dtype=float)
-        
-        tanggal = tgl
-        
-        if np.isnan(features).any():
-            raise HTTPException(status_code=400, detail="Invalid input")
-        
-        return predict(features, tanggal)
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(status_code=500,detail=str(e))
+class PredictRequest(BaseModel):
+    data: list
 
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+@app.post("/predict")
+def predict(req: PredictRequest):
+
+    context = np.array(req.data).astype(float)
+
+    # (window, variates)
+    context = context.T
+
+    # (1, variates, window)
+    context = np.expand_dims(context, axis=0)
+
+    forecast = pipeline.predict(
+        inputs=context,
+        prediction_length=3
+    )
+
+    pred_tensor = forecast[0]
+
+    predictions = pred_tensor.median(dim=1).values
+    predictions = predictions.squeeze().cpu().numpy()
+
+    harga_pred = predictions[0].tolist()
+
+    return {
+        "prediksi": harga_pred
+    }

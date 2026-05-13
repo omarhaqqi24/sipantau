@@ -21,55 +21,95 @@ class PredictController extends Controller
                 'komoditas_id' => 'required|exists:komoditas,id'
             ]);
 
-            $pasar = HargaPasarHarian::where('komoditas_id', $validated['komoditas_id'])
-                ->where('pasar_id', $validated['pasar_id'])
-                ->orderBy('tanggal', 'desc')
-                ->take(4)
-                ->get();
+            $rows = HargaPasarHarian::query()
+                ->join(
+                    'ketersediaan_harians',
+                    function ($join) use ($validated) {
+                        $join->on(
+                            'harga_pasar_harians.tanggal',
+                            '=',
+                            'ketersediaan_harians.tanggal'
+                        )
+                        ->on(
+                            'harga_pasar_harians.komoditas_id',
+                            '=',
+                            'harga_pasar_harians.komoditas_id'
+                        );
+                    }
+                )
+                ->where(
+                    'harga_pasar_harians.komoditas_id',
+                    $validated['komoditas_id']
+                )
+                ->where(
+                    'harga_pasar_harians.pasar_id',
+                    $validated['pasar_id']
+                )
+                ->orderBy('harga_pasar_harians.tanggal', 'desc')
+                ->take(10)
+                ->get([
+                    'harga_pasar',
+                    'ketersediaan_harian',
+                    'kebutuhan_harian',
+                    'neraca_harian',
+                    'harga_pasar_harians.tanggal'
+                ]);
             
-            $petani = HargaPetaniHarian::where('komoditas_id', $validated['komoditas_id'])
-                ->orderBy('tanggal', 'desc')
-                ->take(4)
-                ->get();
-            
-            if ($petani->count() < 4 || $pasar->count() < 3) {
-                return $this->error('Data yang dibutuhkan tidak cukup');
-            }
+                $rows = $rows->reverse()->values();
 
-            $data = [
-                "harga_petani_h_min_0" => $petani[0]->harga_petani,
-                "harga_petani_h_min_1" => $petani[1]->harga_petani,
-                "harga_petani_h_min_2" => $petani[2]->harga_petani,
-                "harga_petani_h_min_3" => $petani[3]->harga_petani,
+                $data = [];
+                foreach ($rows as $row) {
+                    $data[] = [
+                        (float) $row->harga_pasar,
+                        (float) $row->ketersediaan_harian,
+                        (float) $row->kebutuhan_harian,
+                        (float) $row->neraca_harian
+                    ];
+                }
 
-                "harga_pasar_h_min_0" => $pasar[0]->harga_pasar,
-                "harga_pasar_h_min_1" => $pasar[1]->harga_pasar,
-                "harga_pasar_h_min_2" => $pasar[2]->harga_pasar,
+                $response = Http::post('http://ml-service:8001/predict',
+                    [
+                        'data' => $data
+                    ] 
+                );
 
-                "tanggal" => $pasar[0]->tanggal
-            ];
+                // $result = [
+                //     "tanggal" => [
+                //         $rows[0]->tanggal,
+                //         $rows[1]->tanggal,
+                //         $rows[2]->tanggal,
+                //         $rows[3]->tanggal,
+                //         $rows[4]->tanggal,
+                //         $rows[5]->tanggal,
+                //         $rows[6]->tanggal,
+                //         $rows[7]->tanggal,
+                //         $rows[8]->tanggal,
+                //         $rows[9]->tanggal,
+                //     ],
+                //     "data_request" => $data,
+                //     "response" => $response->json()
+                // ];
 
-            $response = Http::post('http://ml-service:8001/predict', $data);
-
-            if ($response->failed()) {
-                return $this->error('Gagal tersambung ke layanan ML', 500);
-            }
-
-            $result = [
-                "tanggal" => [
-                    $pasar[0]->tanggal,
-                    $pasar[1]->tanggal,
-                    $pasar[2]->tanggal,
-                    $pasar[3]->tanggal,
-                ],
-                "harga_pasar" => [
-                    "harga_pasar_h_min_0" => $pasar[0]->harga_pasar,
-                    "harga_pasar_h_min_1" => $pasar[1]->harga_pasar,
-                    "harga_pasar_h_min_2" => $pasar[2]->harga_pasar,
-                    "harga_pasar_h_min_3" => $pasar[3]->harga_pasar,
-                ],
-                "prediksi" => $response->json()
-            ];
+                $result = [
+                    "tanggal" => [
+                        $rows[9]->tanggal,
+                        $rows[8]->tanggal,
+                        $rows[7]->tanggal,
+                        $rows[6]->tanggal,
+                    ],
+                    "harga_pasar" => [
+                        "harga_pasar_h_min_0" => $rows[9]->harga_pasar,
+                        "harga_pasar_h_min_1" => $rows[8]->harga_pasar,
+                        "harga_pasar_h_min_2" => $rows[7]->harga_pasar,
+                        "harga_pasar_h_min_3" => $rows[6]->harga_pasar,
+                    ],
+                    "prediksi" => [
+                        "hari_1" => $response->json()['prediksi'][0],
+                        "hari_2" => $response->json()['prediksi'][1],
+                        "hari_3" => $response->json()['prediksi'][2],
+                        "today" => now()->toISOString()
+                    ]
+                ];
 
             return $this->success($result, 'Prediksi Harga Berhasil');
         } catch (Throwable $e) {
