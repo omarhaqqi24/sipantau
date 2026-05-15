@@ -18,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => RoleMiddleware::class,
             'permission' => PermissionMiddleware::class
         ]);
+        $middleware->append(\App\Http\Middleware\InjectBearerToken::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

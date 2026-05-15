@@ -18,6 +18,8 @@ services:
       - ./backend:/var/www
     depends_on:
       - mysql
+    expose:
+      - 9000
 
   nginx:
     image: nginx:latest
@@ -35,6 +37,18 @@ services:
     container_name: ml-service
     volumes:
       - ./ml-service:/app
+
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    restart: unless-stopped
+    expose:
+      - 3000
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - WATCHPACK_POLLING=true
 
 volumes:
   mysql_data:
