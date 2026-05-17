@@ -12,7 +12,7 @@ export default function LoginTimPenanggulangan() {
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({})
-  const [popup, setPopup] = useState<{ type: 'success' | 'error'; message: string } | null>(null)
+  const [popup, setPopup] = useState<{ type: 'success' | 'error'; message: string; errorType?: 'credentials' | 'network' | 'timeout' | 'server' } | null>(null)
 
   const validate = () => {
     const newErrors: { email?: string; password?: string } = {}
@@ -35,14 +35,18 @@ export default function LoginTimPenanggulangan() {
     setPopup(null)
 
     try {
-      const params = new URLSearchParams({ email, password })
-      const url = `/api/login?${params.toString()}`
+      const url = `/api/login`
       console.log('[Login Tim Pengendalian] Mengirim request ke:', url)
 
       const controller = new AbortController()
       const timeoutId = setTimeout(() => controller.abort(), 15000)
 
-      const response = await fetch(url, { method: 'POST', signal: controller.signal })
+      const response = await fetch(url, { 
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+        signal: controller.signal 
+      })
       clearTimeout(timeoutId)
       const data = await response.json()
 
@@ -74,17 +78,26 @@ export default function LoginTimPenanggulangan() {
           }, 800)
         }
       } else {
-        const msg = data.message || data.error || 'Email atau password salah.'
-        console.warn('[Login Tim Pengendalian] Login gagal:', msg)
-        setPopup({ type: 'error', message: msg })
+        // Cek apakah error dari server (koneksi/timeout) atau credentials salah
+        const errorType = data.errorType as string | undefined
+        if (errorType === 'network' || errorType === 'timeout' || response.status === 503 || response.status === 504) {
+          const msg = data.message || 'Gagal terhubung ke server. Periksa koneksi Anda.'
+          console.warn('[Login Tim Pengendalian] Koneksi gagal:', msg)
+          setPopup({ type: 'error', message: msg, errorType: errorType === 'timeout' ? 'timeout' : 'network' })
+        } else {
+          // 401 atau response error lain = credentials salah
+          const msg = data.message || data.error || 'Email atau password salah. Periksa kembali dan coba lagi.'
+          console.warn('[Login Tim Pengendalian] Credentials salah:', msg)
+          setPopup({ type: 'error', message: msg, errorType: 'credentials' })
+        }
       }
     } catch (err: unknown) {
       console.error('[Login Tim Pengendalian] Error:', err)
       const error = err as Error
       if (error?.name === 'AbortError') {
-        setPopup({ type: 'error', message: 'Koneksi timeout. Server tidak merespons dalam 15 detik. Coba lagi.' })
+        setPopup({ type: 'error', message: 'Koneksi timeout. Server tidak merespons dalam 15 detik. Coba lagi.', errorType: 'timeout' })
       } else {
-        setPopup({ type: 'error', message: 'Gagal terhubung ke server. Periksa koneksi Anda.' })
+        setPopup({ type: 'error', message: 'Gagal terhubung ke server. Periksa koneksi internet Anda.', errorType: 'network' })
       }
     } finally {
       setIsLoading(false)
@@ -110,17 +123,52 @@ export default function LoginTimPenanggulangan() {
           <div className="bg-white rounded-2xl shadow-2xl p-6 sm:p-8 w-full max-w-sm text-center flex flex-col items-center gap-4 animate-fadeIn">
             {popup.type === 'success' ? (
               <HiCheckCircle className="text-green-500" size={56} />
+            ) : popup.errorType === 'credentials' ? (
+              // Icon kunci untuk error credentials
+              <div className="flex items-center justify-center w-14 h-14 rounded-full bg-orange-100">
+                <svg xmlns="http://www.w3.org/2000/svg" className="text-orange-500" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+              </div>
             ) : (
-              <HiXCircle className="text-red-500" size={56} />
+              // Icon sinyal untuk error jaringan
+              <div className="flex items-center justify-center w-14 h-14 rounded-full bg-red-100">
+                <svg xmlns="http://www.w3.org/2000/svg" className="text-red-500" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="1" y1="1" x2="23" y2="23"/>
+                  <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/>
+                  <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/>
+                  <path d="M10.71 5.05A16 16 0 0 1 22.56 9"/>
+                  <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/>
+                  <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
+                  <line x1="12" y1="20" x2="12.01" y2="20"/>
+                </svg>
+              </div>
             )}
-            <p className={`text-base sm:text-lg font-semibold ${popup.type === 'success' ? 'text-green-700' : 'text-red-700'}`}>
-              {popup.type === 'success' ? 'Login Berhasil!' : 'Login Gagal'}
+            <p className={`text-base sm:text-lg font-semibold ${
+              popup.type === 'success' 
+                ? 'text-green-700' 
+                : popup.errorType === 'credentials' 
+                  ? 'text-orange-600' 
+                  : 'text-red-700'
+            }`}>
+              {popup.type === 'success' 
+                ? 'Login Berhasil!' 
+                : popup.errorType === 'credentials' 
+                  ? 'Email / Password Salah'
+                  : popup.errorType === 'timeout'
+                    ? 'Koneksi Timeout'
+                    : 'Gagal Terhubung'}
             </p>
             <p className="text-gray-600 text-sm sm:text-base">{popup.message}</p>
             {popup.type === 'error' && (
               <button
                 onClick={() => setPopup(null)}
-                className="mt-2 bg-red-500 hover:bg-red-600 text-white font-semibold px-6 py-2 rounded-full transition text-sm"
+                className={`mt-2 text-white font-semibold px-6 py-2 rounded-full transition text-sm ${
+                  popup.errorType === 'credentials'
+                    ? 'bg-orange-500 hover:bg-orange-600'
+                    : 'bg-red-500 hover:bg-red-600'
+                }`}
               >
                 Tutup
               </button>

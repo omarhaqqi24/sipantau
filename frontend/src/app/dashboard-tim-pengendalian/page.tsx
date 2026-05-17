@@ -42,7 +42,8 @@ const pasarData = [
     'Beras Medium': '18.000/Kg', 'Cabai Rawit Merah': '60.000/Kg',
     'Cabai Merah Besar': '50.000/Kg', 'Bawang Merah': '40.000/Kg',
   }},
-  { name: 'Pasar Warungkiara', lat: -7.2144, lng: 106.8833, image: '/assets/img/fotokiara.jpg', prices: {
+  { name: 'Pasar Warungkiara', lat: -6.97839, lng: 106.71711, image: '/assets/img/fotokiara.jpg', prices: {
+
     'Beras Medium': '13.000/Kg', 'Cabai Rawit Merah': '52.000/Kg',
     'Cabai Merah Besar': '43.000/Kg', 'Bawang Merah': '33.000/Kg',
   }},

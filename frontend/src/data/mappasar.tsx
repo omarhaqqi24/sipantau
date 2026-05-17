@@ -6,6 +6,7 @@ export const pasarLocations = [
   { name: 'Pasar Cibadak', lat: -6.8925, lng: 106.7800, price: '14.000/Kg' },
   { name: 'Pasar Sukaraja', lat: -6.9369, lng: 106.9450, price: '17.000/Kg' },
   { name: 'Pasar Surade', lat: -7.3486, lng: 106.5742, price: '18.000/Kg' },
-  { name: 'Pasar Warungkiara', lat: -7.2144, lng: 106.8833, price: '13.000/Kg' },
+  { name: 'Pasar Warungkiara', lat: -6.97839, lng: 106.71711, price: '13.000/Kg' },
+
   { name: 'Pasar Palabuhanratu', lat: -6.9877, lng: 106.5513, price: '16.000/Kg' },
 ];
