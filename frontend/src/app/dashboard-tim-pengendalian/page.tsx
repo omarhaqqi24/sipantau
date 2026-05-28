@@ -69,6 +69,7 @@ export default function DashboardTimPenanggulangan() {
   const [selectedMarket, setSelectedMarket] = useState('')
   const [showDropdown, setShowDropdown] = useState(false)
   const [showAlert, setShowAlert] = useState(false)
+  const [showPageAlert, setShowPageAlert] = useState(true)
 
   // Komoditas state
   const [selectedKomoditas, setSelectedKomoditas] = useState('Beras Medium')
@@ -204,14 +205,25 @@ export default function DashboardTimPenanggulangan() {
                   </button>
                 </div>
               )}
-              {showAlert && selectedMarket && (
-                <div className="mt-2 w-full px-3 sm:px-4 py-3 sm:py-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg shadow-md animate-fade-in">
-                  <strong className='text-lg sm:text-2xl text-red-700 block mb-1'>ALERT!</strong>
-                  <p className='text-gray-800 text-sm sm:text-lg leading-snug'>
-                    Harga dan pasokan di <b>{selectedMarket}</b> diprediksi terjadi kenaikan harga komoditas.
-                  </p>
+              {(showAlert && selectedMarket) || showPageAlert ? (
+                <div className="mt-2 w-full px-3 sm:px-4 py-3 sm:py-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg shadow-md animate-fade-in flex items-start justify-between gap-2">
+                  <div>
+                    <strong className='text-lg sm:text-2xl text-red-700 block mb-1'>ALERT!</strong>
+                    <p className='text-gray-800 text-sm sm:text-lg leading-snug'>
+                      Harga dan pasokan di <b>{showPageAlert && !selectedMarket ? 'Pasar Cisaat' : selectedMarket}</b> diprediksi terjadi kenaikan harga komoditas.
+                    </p>
+                  </div>
+                  {showPageAlert && !selectedMarket && (
+                    <button
+                      onClick={() => setShowPageAlert(false)}
+                      className="text-red-400 hover:text-red-600 transition text-xl leading-none flex-shrink-0 mt-0.5"
+                      aria-label="Tutup alert"
+                    >
+                      ✕
+                    </button>
+                  )}
                 </div>
-              )}
+              ) : null}
             </div>
           </div>
 

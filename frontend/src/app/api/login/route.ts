@@ -27,11 +27,44 @@ export async function POST(req: NextRequest) {
     })
     clearTimeout(timeoutId)
 
-    const data = await response.json()
+    // Baca body sebagai text dulu, lalu coba parse JSON
+    // (server produksi kadang mengembalikan HTML bukan JSON saat error)
+    const rawText = await response.text()
     console.log('[Login Proxy] Response status:', response.status)
-    console.log('[Login Proxy] Response data:', JSON.stringify(data))
+    console.log('[Login Proxy] Response raw (100 chars):', rawText.slice(0, 100))
 
-    // Teruskan response asli dari backend (termasuk status 401 untuk wrong credentials)
+    let data: Record<string, unknown>
+    try {
+      data = JSON.parse(rawText)
+      console.log('[Login Proxy] Response data:', JSON.stringify(data))
+    } catch {
+      // Server mengembalikan HTML / bukan JSON
+      console.warn('[Login Proxy] Response bukan JSON. Status:', response.status)
+
+      // Jika status 4xx → credentials salah (bukan masalah jaringan)
+      if (response.status >= 400 && response.status < 500) {
+        return NextResponse.json(
+          {
+            success: false,
+            message: 'Email atau password salah. Periksa kembali dan coba lagi.',
+            errorType: 'credentials',
+          },
+          { status: 422 }
+        )
+      }
+
+      // Status 5xx atau lainnya → server error
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Terjadi kesalahan pada server. Coba lagi nanti.',
+          errorType: 'server',
+        },
+        { status: response.status || 500 }
+      )
+    }
+
+    // Teruskan response asli dari backend (termasuk status 422/401 untuk wrong credentials)
     return NextResponse.json(data, { status: response.status })
   } catch (error: unknown) {
     const err = error as NodeJS.ErrnoException
