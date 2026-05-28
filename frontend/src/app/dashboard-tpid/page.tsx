@@ -6,14 +6,6 @@ import { useRouter } from 'next/navigation'
 import { FiSearch } from 'react-icons/fi'
 import { HiArrowLeft } from 'react-icons/hi'
 
-// Komoditas list
-const komoditasList = [
-  'Beras Medium',
-  'Cabai Rawit Merah',
-  'Cabai Merah Besar',
-  'Bawang Merah',
-]
-
 export default function DashboardTPID() {
   const router = useRouter()
   const [selectedMarket, setSelectedMarket] = useState('')
@@ -22,10 +14,26 @@ export default function DashboardTPID() {
   const [selectedKomoditas, setSelectedKomoditas] = useState('')
   const dropdownRef = useRef<HTMLDivElement>(null)
 
+  const [komoditasList, setKomoditasList] = useState<{ id: number; nama_komoditas: string }[]>([])
+  const [loadingKomoditas, setLoadingKomoditas] = useState(true)
+
   // Get selected market from localStorage
   useEffect(() => {
     const market = localStorage.getItem('selectedMarket') || 'Pasar Cisaat'
     setSelectedMarket(market)
+  }, [])
+
+  // Fetch komoditas dari API
+  useEffect(() => {
+    fetch('/api/komoditas')
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.success && Array.isArray(data.data)) {
+          setKomoditasList(data.data)
+        }
+      })
+      .catch(err => console.error('[dashboard-tpid] Gagal fetch komoditas:', err))
+      .finally(() => setLoadingKomoditas(false))
   }, [])
 
   // Close dropdown on click outside
@@ -41,7 +49,7 @@ export default function DashboardTPID() {
   }, [])
 
   const filteredKomoditas = komoditasList.filter(k =>
-    k.toLowerCase().includes(searchTerm.toLowerCase())
+    k.nama_komoditas.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   const handleKomoditasSelect = (komoditas: string) => {
@@ -52,6 +60,7 @@ export default function DashboardTPID() {
     localStorage.setItem('selectedKomoditasRight', komoditas)
     router.push('/price-chart')
   }
+
 
   return (
     <div className="min-h-screen bg-[#eef2f5]">
@@ -110,20 +119,22 @@ export default function DashboardTPID() {
               {showDropdown && (
                 <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-2xl z-50 overflow-hidden">
                   <div className="max-h-[250px] overflow-y-auto">
-                    {filteredKomoditas.length > 0 ? (
-                      filteredKomoditas.map((komoditas, idx) => (
+                    {loadingKomoditas ? (
+                      <div className="px-5 py-3 text-sm text-gray-400 text-center">Memuat komoditas...</div>
+                    ) : filteredKomoditas.length > 0 ? (
+                      filteredKomoditas.map((item, idx) => (
                         <button
-                          key={idx}
-                          onClick={() => handleKomoditasSelect(komoditas)}
+                          key={item.id}
+                          onClick={() => handleKomoditasSelect(item.nama_komoditas)}
                           className={`w-full text-left px-5 py-3 text-sm font-medium transition-colors
                             ${idx === 0 && !searchTerm
                               ? 'bg-[#d4e6b5] text-gray-800 font-bold'
                               : 'text-gray-700 hover:bg-gray-100'
                             }
-                            ${selectedKomoditas === komoditas ? 'bg-[#d4e6b5] text-gray-800 font-bold' : ''}
+                            ${selectedKomoditas === item.nama_komoditas ? 'bg-[#d4e6b5] text-gray-800 font-bold' : ''}
                           `}
                         >
-                          {komoditas}
+                          {item.nama_komoditas}
                         </button>
                       ))
                     ) : (

@@ -69,7 +69,7 @@ export default function PilihKomoditas() {
             </button>
 
             {showDropdownLeft && komoditasList.length > 0 && (
-              <div className="absolute top-full w-[96%] left-0 right-0 bg-white border border-gray-300 rounded-lg shadow-lg z-10 mt-1">
+              <div className="absolute top-full w-[96%] left-0 right-0 bg-white border border-gray-300 rounded-lg shadow-lg z-10 mt-1 max-h-[250px] overflow-y-auto">
                 {komoditasList.map((item) => (
                   <button
                     key={item.id}
