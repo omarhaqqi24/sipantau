@@ -43,15 +43,33 @@ export default function LoginTimPenanggulangan() {
 
       const response = await fetch(url, { 
         method: 'POST', 
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify({ email, password }),
         signal: controller.signal 
       })
       clearTimeout(timeoutId)
       const data = await response.json()
 
-      console.log('[Login Tim Pengendalian] Response status:', response.status)
-      console.log('[Login Tim Pengendalian] Response data:', data)
+      // const contentType = response.headers.get('content-type')
+
+      // let data
+      // // console.log('[Login Tim Pengendalian] Response status:', response.status)
+
+      // if (contentType?.includes('application/json')) {
+      //   data = await response.json()
+      // } else {
+      //   const text = await response.text()
+
+      //   console.error('Non-JSON response:', text)
+
+      //   data = {
+      //     success: false,
+      //     message: 'Server mengembalikan response yang tidak valid'
+      //   }
+      // }
+
+      // console.log('[Login Tim Pengendalian] Response status:', response.status)
+      // console.log('[Login Tim Pengendalian] Response data:', data)
 
       if (response.ok && data.success) {
         const token = data?.data?.token || data?.token

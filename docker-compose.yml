@@ -16,6 +16,7 @@ services:
     container_name: backend
     volumes:
       - ./backend:/var/www
+      - laravel_vendor:/var/www/vendor
     depends_on:
       - mysql
     expose:
@@ -52,3 +53,4 @@ services:
 
 volumes:
   mysql_data:
+  laravel_vendor:
