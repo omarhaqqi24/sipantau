@@ -1,0 +1,67 @@
+# RENAME THIS FILE TO docker-compose.yml BEFORE RUNNING DOCKER COMPOSE COMMANDS
+
+services:
+  mysql:
+    image: mysql:8
+    container_name: mysql-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  backend:
+    build: ./backend
+    container_name: backend
+    restart: unless-stopped
+    volumes:
+      - ./backend:/var/www
+      - laravel_vendor:/var/www/vendor
+    depends_on:
+      - mysql
+    expose:
+      - 9000
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./backend:/var/www
+      - ./backend/nginx.conf:/etc/nginx/conf.d/default.conf
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+    depends_on:
+      - backend
+      - frontend
+
+  ml:
+    build:
+      context: ./ml-service
+      extra_hosts:
+      - "files.pythonhosted.org:151.101.0.223"
+    container_name: ml-service
+    volumes:
+      - ./ml-service:/app
+
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    restart: unless-stopped
+    expose:
+      - 3000
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - WATCHPACK_POLLING=true
+    env_file:
+      - ./frontend/.env.production
+
+volumes:
+  mysql_data:
+  laravel_vendor:
