@@ -1,18 +1,6 @@
 # RENAME THIS FILE TO docker-compose.yml BEFORE RUNNING DOCKER COMPOSE COMMANDS
 
 services:
-  mysql:
-    image: mysql:8
-    container_name: mysql-db
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-    volumes:
-      - mysql_data:/var/lib/mysql
-
   backend:
     build: ./backend
     container_name: backend
@@ -20,10 +8,10 @@ services:
     volumes:
       - ./backend:/var/www
       - laravel_vendor:/var/www/vendor
-    depends_on:
-      - mysql
     expose:
       - 9000
+    networks:
+      - sipantau-network
 
   nginx:
     image: nginx:latest
@@ -38,6 +26,8 @@ services:
     depends_on:
       - backend
       - frontend
+    networks:
+      - sipantau-network
 
   ml:
     build:
@@ -47,6 +37,8 @@ services:
     container_name: ml-service
     volumes:
       - ./ml-service:/app
+    networks:
+      - sipantau-network
 
   frontend:
     build: ./frontend
@@ -60,8 +52,13 @@ services:
     environment:
       - WATCHPACK_POLLING=true
     env_file:
-      - ./frontend/.env.production
+      - ./frontend/.env
+    networks:
+      - sipantau-network
 
 volumes:
-  mysql_data:
   laravel_vendor:
+
+networks:
+  sipantau-network:
+    external: true

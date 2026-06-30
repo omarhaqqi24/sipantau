@@ -1,15 +1,4 @@
 services:
-  mysql:
-    image: mysql:8
-    container_name: mysql-db
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-    volumes:
-      - mysql_data:/var/lib/mysql
 
   backend:
     build: ./backend
@@ -17,10 +6,10 @@ services:
     volumes:
       - ./backend:/var/www
       - laravel_vendor:/var/www/vendor
-    depends_on:
-      - mysql
     expose:
       - 9000
+    networks:
+      - sipantau-network
 
   nginx:
     image: nginx:latest
@@ -32,12 +21,16 @@ services:
       - ./backend/nginx.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - backend
+    networks:
+      - sipantau-network
 
   ml:
     build: ./ml-service
     container_name: ml-service
     volumes:
       - ./ml-service:/app
+    networks:
+      - sipantau-network
 
   frontend:
     build: ./frontend
@@ -50,7 +43,12 @@ services:
       - /app/node_modules
     environment:
       - WATCHPACK_POLLING=true
+    networks:
+      - sipantau-network
 
 volumes:
-  mysql_data:
   laravel_vendor:
+
+networks:
+  sipantau-network:
+    external: true
