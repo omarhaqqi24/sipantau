@@ -3,22 +3,22 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HargaPasarHarianController;
 use App\Http\Controllers\HargaPetaniHarianController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\KomoditasController;
 use App\Http\Controllers\KetersediaanHarianController;
+use App\Http\Controllers\KomoditasController;
 use App\Http\Controllers\PanenController;
 use App\Http\Controllers\PasarController;
 use App\Http\Controllers\PredictController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
 // })->middleware('auth:sanctum');
 
 Route::post('/login', [AuthController::class, 'login']);
-Route::get('/health', function() {
+Route::get('/health', function () {
     return response()->json([
-        'status' => 'ok'
+        'status' => 'ok',
     ]);
 });
 
@@ -31,11 +31,11 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Komoditas
-    Route::get('/komoditas', [KomoditasController::class,'index'])
+    Route::get('/komoditas', [KomoditasController::class, 'index'])
         ->middleware('permission:view_komoditas');
 
     // Ketersediaan Harian
-    Route::post('/ketersediaan', [KetersediaanHarianController::class,'store'])
+    Route::post('/ketersediaan', [KetersediaanHarianController::class, 'store'])
         ->middleware('permission:create_ketersediaan_harian');
 
     // Panen
@@ -49,24 +49,24 @@ Route::middleware('auth:sanctum')->group(function () {
     // Harga Petani Harian
     Route::post('/harga-petani', [HargaPetaniHarianController::class, 'store'])
         ->middleware('permission:create_harga_petani');
-    
+
     // Prediksi Harga Pasar
     Route::get('/predict', [PredictController::class, 'index'])
         ->middleware('permission:view_prediksi');
-    
+
     Route::middleware('role:admin')->group(function () {
         // Register
         Route::post('/register', [AuthController::class, 'register']);
 
         // Komoditas
-        Route::post('/komoditas', [KomoditasController::class,'store']);
+        Route::post('/komoditas', [KomoditasController::class, 'store']);
 
         // Pasar
         Route::get('/pasar', [PasarController::class, 'index']);
         Route::post('/pasar', [PasarController::class, 'store']);
 
         // Ketersediaan Harian
-        Route::get('/ketersediaan', [KetersediaanHarianController::class,'index']);
+        Route::get('/ketersediaan', [KetersediaanHarianController::class, 'index']);
 
         // Panen
         Route::get('/panen', [PanenController::class, 'index']);

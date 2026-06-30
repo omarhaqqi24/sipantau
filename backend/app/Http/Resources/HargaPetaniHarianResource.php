@@ -21,17 +21,17 @@ class HargaPetaniHarianResource extends JsonResource
 
             'komoditas' => $this->whenLoaded('komoditas', function () {
                 return [
-                    'id'=> $this->komoditas->id,
-                    'nama'=> $this->komoditas->nama_komoditas,
+                    'id' => $this->komoditas->id,
+                    'nama' => $this->komoditas->nama_komoditas,
                 ];
             }),
 
             'user' => $this->whenLoaded('user', function () {
                 return [
-                    'id'=> $this->user->id,
-                    'name'=> $this->user->name,
+                    'id' => $this->user->id,
+                    'name' => $this->user->name,
                 ];
-            })
+            }),
         ];
     }
 }

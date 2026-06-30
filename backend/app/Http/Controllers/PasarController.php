@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pasar;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
-use App\Models\Pasar;
 use Throwable;
 
 class PasarController extends Controller
@@ -26,17 +26,17 @@ class PasarController extends Controller
     {
         $validated = $request->validate([
             'daerah' => 'required|string|max:255',
-            'nama_pasar'=> 'required|string|max:255'
+            'nama_pasar' => 'required|string|max:255',
         ]);
 
         try {
             $pasar = Pasar::create($validated);
 
             return $this->success([
-                'id'=> $pasar->id,
+                'id' => $pasar->id,
                 'daerah' => $validated['daerah'],
-                'nama_pasar'=> $validated['nama_pasar'],
-            ],'Pasar created successfully', 201);
+                'nama_pasar' => $validated['nama_pasar'],
+            ], 'Pasar created successfully', 201);
         } catch (Throwable $e) {
             return $this->error($e->getMessage());
         }

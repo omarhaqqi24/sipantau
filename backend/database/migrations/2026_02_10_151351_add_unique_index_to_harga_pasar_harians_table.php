@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('harga_pasar_harians', function (Blueprint $table) {
-            $table->unique(['komoditas_id','tanggal','pasar_id'], 'harga_pasar_harians_komoditas_tanggal_pasar_unique');
+            $table->unique(['komoditas_id', 'tanggal', 'pasar_id'], 'harga_pasar_harians_komoditas_tanggal_pasar_unique');
         });
     }
 

@@ -19,7 +19,7 @@ class HargaPasarHarianController extends Controller
             $hargaPasar = HargaPasarHarian::with([
                 'komoditas:id,nama_komoditas',
                 'user:id,name',
-                'pasar:id,nama_pasar'
+                'pasar:id,nama_pasar',
             ])->get();
 
             return $this->success(HargaPasarHarianResource::collection($hargaPasar), 'Harga Pasar Harian fetched successfully');
@@ -40,20 +40,20 @@ class HargaPasarHarianController extends Controller
 
                 'items.*.harga_pasar' => 'required|integer|min:0',
                 'items.*.tanggal' => 'required|date',
-                'items.*.pasar_id' => 'required|exists:pasars,id'
+                'items.*.pasar_id' => 'required|exists:pasars,id',
             ]);
 
             DB::transaction(function () use ($validated, &$saveIds, $request) {
                 foreach ($validated['items'] as $item) {
                     $record = HargaPasarHarian::updateOrCreate(
                         [
-                        'komoditas_id' => $validated['komoditas_id'],
-                        'pasar_id' => $item['pasar_id'],
-                        'tanggal'=> $item['tanggal'],
-                    ], [
-                        'harga_pasar' => $item['harga_pasar'],
-                        'user_id' => $request->user()->id
-                    ]);
+                            'komoditas_id' => $validated['komoditas_id'],
+                            'pasar_id' => $item['pasar_id'],
+                            'tanggal' => $item['tanggal'],
+                        ], [
+                            'harga_pasar' => $item['harga_pasar'],
+                            'user_id' => $request->user()->id,
+                        ]);
 
                     $saveIds[] = $record->id;
                 }
@@ -62,7 +62,7 @@ class HargaPasarHarianController extends Controller
             $records = HargaPasarHarian::with([
                 'komoditas',
                 'user',
-                'pasar'
+                'pasar',
             ])->whereIn('id', $saveIds)->get();
 
             return $this->success(

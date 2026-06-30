@@ -15,8 +15,8 @@ class KetersediaanHarianResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            "id"=> $this->id,
-            "ketersediaan_harian" => $this->ketersediaan_harian,
+            'id' => $this->id,
+            'ketersediaan_harian' => $this->ketersediaan_harian,
             'kebutuhan_harian' => $this->kebutuhan_harian,
             'neraca_harian' => $this->neraca_harian,
             'tanggal' => $this->tanggal,
@@ -24,16 +24,16 @@ class KetersediaanHarianResource extends JsonResource
             'komoditas' => $this->whenLoaded('komoditas', function () {
                 return [
                     'id' => $this->komoditas->id,
-                    'nama' => $this->komoditas->nama_komoditas
+                    'nama' => $this->komoditas->nama_komoditas,
                 ];
             }),
 
             'user' => $this->whenLoaded('user', function () {
                 return [
                     'id' => $this->user->id,
-                    'name' => $this->user->name
+                    'name' => $this->user->name,
                 ];
-            })
+            }),
         ];
     }
 }

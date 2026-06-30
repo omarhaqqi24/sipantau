@@ -3,8 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\User;
-use App\Models\Komoditas;
 
 class KetersediaanHarian extends Model
 {
@@ -14,11 +12,11 @@ class KetersediaanHarian extends Model
         'neraca_harian',
         'tanggal',
         'komoditas_id',
-        'user_id'
+        'user_id',
     ];
 
     protected $casts = [
-        'tanggal'=> 'date'
+        'tanggal' => 'date',
     ];
 
     public function komoditas()

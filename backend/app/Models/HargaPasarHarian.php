@@ -3,9 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Komoditas;
-use App\Models\User;
-use App\Models\Pasar;
 
 class HargaPasarHarian extends Model
 {
@@ -18,7 +15,7 @@ class HargaPasarHarian extends Model
     ];
 
     protected $casts = [
-        'tanggal' => 'date'
+        'tanggal' => 'date',
     ];
 
     public function komoditas()

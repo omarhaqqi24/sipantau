@@ -7,7 +7,7 @@ const LOGOUT_URL = '/api/logout';
 test('verified user can logout', function () {
     $user = User::factory()->create();
     $token = $user->createToken('api-token')->plainTextToken;
-    
+
     expect(
         $user->fresh()->tokens()->count()
     )->toBe(1);
@@ -18,10 +18,10 @@ test('verified user can logout', function () {
     )->postJson(LOGOUT_URL)
         ->assertOk()
         ->assertJson([
-            'success'=>true,
-            'message'=>'Logged out successfully'
+            'success' => true,
+            'message' => 'Logged out successfully',
         ]);
-    
+
     expect(
         $user->fresh()->tokens()->count()
     )->toBe(0);
@@ -31,7 +31,7 @@ test('guest cannot logout', function () {
     $this->postJson(LOGOUT_URL)
         ->assertUnauthorized()
         ->assertJson([
-            'message'=>'Unauthenticated.'
+            'message' => 'Unauthenticated.',
         ]);
 });
 
@@ -42,6 +42,6 @@ test('invalid token cannot logout', function () {
     )->postJson(LOGOUT_URL)
         ->assertUnauthorized()
         ->assertJson([
-            'message'=>'Unauthenticated.'
+            'message' => 'Unauthenticated.',
         ]);
 });

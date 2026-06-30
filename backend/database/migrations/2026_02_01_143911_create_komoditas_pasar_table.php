@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('komoditas_pasar', function (Blueprint $table) {
             $table->foreignId('komoditas_id')->constrained()->cascadeOnDelete();
             $table->foreignId('pasar_id')->constrained()->cascadeOnDelete();
-            $table->primary(['komoditas_id','pasar_id']);
+            $table->primary(['komoditas_id', 'pasar_id']);
         });
     }
 

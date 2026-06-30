@@ -3,9 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Panen;
-use App\Models\KetersediaanHarian;
-use App\Models\Pasar;
 
 class Komoditas extends Model
 {

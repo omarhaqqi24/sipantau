@@ -3,9 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\User;
-use App\Models\Komoditas;
-
 
 class Panen extends Model
 {
@@ -13,11 +10,11 @@ class Panen extends Model
         'perkiraan_tonase',
         'tanggal_prakiraan_panen',
         'komoditas_id',
-        'user_id'
+        'user_id',
     ];
 
     protected $casts = [
-        'tanggal_prakiraan_panen' => 'date'
+        'tanggal_prakiraan_panen' => 'date',
     ];
 
     public function user()

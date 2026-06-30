@@ -16,11 +16,11 @@ class KomoditasSeeder extends Seeder
             'Cabai Rawit Merah',
             'Cabai Merah Besar',
             'Bawang Merah',
-            'Beras'
+            'Beras',
         ];
 
         foreach ($komoditas as $kom) {
-            Komoditas::firstOrCreate(['nama_komoditas'=>$kom]);
+            Komoditas::firstOrCreate(['nama_komoditas' => $kom]);
         }
     }
 }

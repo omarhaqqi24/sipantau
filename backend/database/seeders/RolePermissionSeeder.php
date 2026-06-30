@@ -21,7 +21,7 @@ class RolePermissionSeeder extends Seeder
             'view_komoditas',
             'create_harga_pasar',
             'create_harga_petani',
-            'create_panen'
+            'create_panen',
         ];
 
         $roles = [
@@ -29,20 +29,20 @@ class RolePermissionSeeder extends Seeder
             'dinas_perdagangan',
             'dinas_ketahanan_pangan',
             'admin',
-            'user'
+            'user',
         ];
 
         foreach ($permissions as $perm) {
-            Permission::firstOrCreate(['name'=>$perm, 'guard_name'=>'web']);
+            Permission::firstOrCreate(['name' => $perm, 'guard_name' => 'web']);
         }
 
         foreach ($roles as $role) {
-            Role::firstOrCreate(['name'=>$role, 'guard_name'=>'web']);
+            Role::firstOrCreate(['name' => $role, 'guard_name' => 'web']);
         }
 
         // Assign permissions
-        Role::findByName('dinas_pertanian')->syncPermissions(['view_komoditas', 'create_harga_petani','create_panen']);
+        Role::findByName('dinas_pertanian')->syncPermissions(['view_komoditas', 'create_harga_petani', 'create_panen']);
         Role::findByName('dinas_perdagangan')->syncPermissions(['view_komoditas', 'create_harga_pasar']);
-        Role::findByName('dinas_ketahanan_pangan')->syncPermissions(['create_ketersediaan_harian','view_komoditas']);
+        Role::findByName('dinas_ketahanan_pangan')->syncPermissions(['create_ketersediaan_harian', 'view_komoditas']);
     }
 }

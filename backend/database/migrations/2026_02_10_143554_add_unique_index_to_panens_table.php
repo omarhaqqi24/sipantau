@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('panens', function (Blueprint $table) {
             $table->unique(
-                ['komoditas_id','tanggal_prakiraan_panen'],
+                ['komoditas_id', 'tanggal_prakiraan_panen'],
                 'panens_komoditas_tanggal_unique'
             );
         });

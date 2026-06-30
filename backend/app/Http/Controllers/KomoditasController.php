@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Komoditas;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
-use App\Models\Komoditas;
 use Throwable;
 
 class KomoditasController extends Controller
@@ -32,8 +32,8 @@ class KomoditasController extends Controller
             $komoditas = Komoditas::create($validated);
 
             return $this->success([
-                'id'=> $komoditas->id,
-                'nama'=> $komoditas->nama_komoditas,
+                'id' => $komoditas->id,
+                'nama' => $komoditas->nama_komoditas,
             ], 'Komoditas created Successfully', 201);
         } catch (Throwable $e) {
             return $this->error('Failed to create Komoditas');

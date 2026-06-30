@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\KetersediaanHarianResource;
+use App\Models\KetersediaanHarian;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Models\KetersediaanHarian;
 use Throwable;
 
 class KetersediaanHarianController extends Controller
@@ -17,8 +17,8 @@ class KetersediaanHarianController extends Controller
     {
         try {
             $ketersediaan_harian = KetersediaanHarian::with([
-                "komoditas:id,nama_komoditas",
-                "user:id,name"
+                'komoditas:id,nama_komoditas',
+                'user:id,name',
             ])->get();
 
             return $this->success(KetersediaanHarianResource::collection($ketersediaan_harian), 'Ketersediaan Harian fetched successfully');
@@ -34,9 +34,9 @@ class KetersediaanHarianController extends Controller
 
             'items' => 'required|array|min:1',
 
-            'items.*.ketersediaan_harian'=> 'required|integer|min:0',
-            'items.*.kebutuhan_harian'=> 'required|integer|min:0',
-            'items.*.neraca_harian'=> 'required|integer',
+            'items.*.ketersediaan_harian' => 'required|integer|min:0',
+            'items.*.kebutuhan_harian' => 'required|integer|min:0',
+            'items.*.neraca_harian' => 'required|integer',
             'items.*.tanggal' => 'required|date',
         ]);
 
@@ -47,11 +47,11 @@ class KetersediaanHarianController extends Controller
                 foreach ($validated['items'] as $item) {
                     $record = KetersediaanHarian::updateOrCreate(
                         [
-                            'komoditas_id'=> $validated['komoditas_id'],
+                            'komoditas_id' => $validated['komoditas_id'],
                             'tanggal' => $item['tanggal'],
                         ],
-                        [                        
-                            'user_id'=> $request->user()->id,
+                        [
+                            'user_id' => $request->user()->id,
 
                             'ketersediaan_harian' => $item['ketersediaan_harian'],
                             'kebutuhan_harian' => $item['kebutuhan_harian'],
@@ -65,7 +65,7 @@ class KetersediaanHarianController extends Controller
 
             $records = KetersediaanHarian::with([
                 'komoditas:id,nama_komoditas',
-                'user:id,name'
+                'user:id,name',
             ])->whereIn('id', $saveIds)->get();
 
             return $this->success(

@@ -3,8 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\User;
-use App\Models\Komoditas;
 
 class HargaPetaniHarian extends Model
 {
@@ -16,7 +14,7 @@ class HargaPetaniHarian extends Model
     ];
 
     protected $casts = [
-        'tanggal'=> 'date',
+        'tanggal' => 'date',
     ];
 
     public function user()

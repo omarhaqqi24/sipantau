@@ -8,35 +8,35 @@ test('user can login with valid credentials', function () {
     $user = User::factory()->create();
 
     $this->postJson(LOGIN_URL, [
-        'email'=>$user->email,
-        'password'=>'password'
+        'email' => $user->email,
+        'password' => 'password',
     ])
         ->assertOk()
         ->assertJson([
-            'success'=>true,
-            'message'=>'Login successful',
+            'success' => true,
+            'message' => 'Login successful',
         ])
         ->assertJsonStructure([
             'success',
             'message',
-            'data'=> [
-                'token'
-            ]
+            'data' => [
+                'token',
+            ],
         ]);
 });
 
 test('login fails with wrong email', function () {
 
     $this->postJson(LOGIN_URL, [
-        'email'=>'test@test.sipantau',
-        'password'=>'password'
+        'email' => 'test@test.sipantau',
+        'password' => 'password',
     ])
         ->assertUnprocessable()
         ->assertJsonValidationErrors([
-            'email'
+            'email',
         ])
         ->assertJson([
-            'message'=>'The provided credentials are incorrect.'
+            'message' => 'The provided credentials are incorrect.',
         ]);
 });
 
@@ -44,44 +44,44 @@ test('login fails with wrong password', function () {
     $user = User::factory()->create();
 
     $this->postJson(LOGIN_URL, [
-        'email'=>$user->email,
-        'password'=>'apakek'
+        'email' => $user->email,
+        'password' => 'apakek',
     ])
         ->assertUnprocessable()
         ->assertJsonValidationErrors([
-            'email'
+            'email',
         ])
         ->assertJson([
-            'message'=>'The provided credentials are incorrect.'
+            'message' => 'The provided credentials are incorrect.',
         ]);
 });
 
 test('login fails with invalid email', function () {
 
     $this->postJson(LOGIN_URL, [
-        'email'=>'testemail',
-        'password'=>'password'
+        'email' => 'testemail',
+        'password' => 'password',
     ])
         ->assertUnprocessable()
         ->assertJsonValidationErrors([
-            'email'
+            'email',
         ])
         ->assertJson([
-            'message'=>'The email field must be a valid email address.'
+            'message' => 'The email field must be a valid email address.',
         ]);
 });
 
 test('login fails with empty email', function () {
     $this->postJson(LOGIN_URL, [
-        'email'=>'',
-        'password'=>'password'
+        'email' => '',
+        'password' => 'password',
     ])
         ->assertUnprocessable()
         ->assertJsonValidationErrors([
-            'email'
+            'email',
         ])
         ->assertJson([
-            'message'=>'The email field is required.'
+            'message' => 'The email field is required.',
         ]);
 });
 
@@ -89,14 +89,14 @@ test('login fails with empty password', function () {
     $user = User::factory()->create();
 
     $this->postJson(LOGIN_URL, [
-        'email'=>$user->email,
-        'password'=>''
+        'email' => $user->email,
+        'password' => '',
     ])
         ->assertUnprocessable()
         ->assertJsonValidationErrors([
-            'password'
+            'password',
         ])
         ->assertJson([
-            'message'=>'The password field is required.'
+            'message' => 'The password field is required.',
         ]);
 });

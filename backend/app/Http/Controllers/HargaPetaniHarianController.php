@@ -18,7 +18,7 @@ class HargaPetaniHarianController extends Controller
         try {
             $hargaPetani = HargaPetaniHarian::with([
                 'komoditas:id,nama_komoditas',
-                'user:id,name'
+                'user:id,name',
             ])->get();
 
             return $this->success(
@@ -37,21 +37,21 @@ class HargaPetaniHarianController extends Controller
 
             $validated = $request->validate([
                 'komoditas_id' => 'required|exists:komoditas,id',
-                
+
                 'items' => 'required|array|min:1',
 
                 'items.*.tanggal' => 'required|date',
-                'items.*.harga_petani' => 'required|integer|min:0'
+                'items.*.harga_petani' => 'required|integer|min:0',
             ]);
 
             DB::transaction(function () use ($request, $validated, &$saveIds) {
                 foreach ($validated['items'] as $item) {
                     $record = HargaPetaniHarian::updateOrCreate([
                         'komoditas_id' => $validated['komoditas_id'],
-                        'tanggal' => $item['tanggal']
+                        'tanggal' => $item['tanggal'],
                     ], [
                         'harga_petani' => $item['harga_petani'],
-                        'user_id'=> $request->user()->id
+                        'user_id' => $request->user()->id,
                     ]);
 
                     $saveIds[] = $record->id;
@@ -60,7 +60,7 @@ class HargaPetaniHarianController extends Controller
 
             $records = HargaPetaniHarian::with([
                 'komoditas',
-                'user'
+                'user',
             ])->whereIn('id', $saveIds)->get();
 
             return $this->success(

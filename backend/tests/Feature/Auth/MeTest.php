@@ -12,17 +12,17 @@ test('authenticated user can view profile', function () {
     $this->getJson(ME_URL)
         ->assertOk()
         ->assertJson([
-            'id'=>$user->id,
-            'name'=>$user->name,
-            'email'=>$user->email
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
         ])
         ->assertJsonStructure([
             'id',
             'name',
             'email',
-            "email_verified_at",
-            "created_at",
-            "updated_at"
+            'email_verified_at',
+            'created_at',
+            'updated_at',
         ]);
 });
 
@@ -30,6 +30,6 @@ test('unauthenticated user cannot view profile', function () {
     $this->getJson(ME_URL)
         ->assertUnauthorized()
         ->assertExactJson([
-            'message'=>'Unauthenticated.'
+            'message' => 'Unauthenticated.',
         ]);
 });

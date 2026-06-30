@@ -11,21 +11,21 @@ test('admin can register user', function () {
     Sanctum::actingAs($user);
 
     $this->postJson(REGISTER_URL, [
-        'name'=>'usertes',
-        'email'=>'email@tes.com',
-        'password'=>'password'
+        'name' => 'usertes',
+        'email' => 'email@tes.com',
+        'password' => 'password',
     ])
         ->assertCreated()
         ->assertJson([
-            'success'=>true,
-            'message'=>'User registered successfully',
+            'success' => true,
+            'message' => 'User registered successfully',
         ])
         ->assertJsonStructure([
             'success',
             'message',
-            'data'=> [
-                'token'
-            ]
+            'data' => [
+                'token',
+            ],
         ]);
 });
 
@@ -35,13 +35,13 @@ test('tpid role user cannot register user', function () {
     Sanctum::actingAs($user);
 
     $this->postJson(REGISTER_URL, [
-        'name'=>'usertes1',
-        'email'=>'email1@tes.com',
-        'password'=>'password'
+        'name' => 'usertes1',
+        'email' => 'email1@tes.com',
+        'password' => 'password',
     ])
         ->assertForbidden()
         ->assertJson([
-            'message'=>'User does not have the right roles.'
+            'message' => 'User does not have the right roles.',
         ]);
 });
 
@@ -51,13 +51,13 @@ test('dinas_pertanian role user cannot register user', function () {
     Sanctum::actingAs($user);
 
     $this->postJson(REGISTER_URL, [
-        'name'=>'usertes1',
-        'email'=>'email1@tes.com',
-        'password'=>'password'
+        'name' => 'usertes1',
+        'email' => 'email1@tes.com',
+        'password' => 'password',
     ])
         ->assertForbidden()
         ->assertJson([
-            'message'=>'User does not have the right roles.'
+            'message' => 'User does not have the right roles.',
         ]);
 });
 
@@ -67,13 +67,13 @@ test('dinas_perdagangan role user cannot register user', function () {
     Sanctum::actingAs($user);
 
     $this->postJson(REGISTER_URL, [
-        'name'=>'usertes1',
-        'email'=>'email1@tes.com',
-        'password'=>'password'
+        'name' => 'usertes1',
+        'email' => 'email1@tes.com',
+        'password' => 'password',
     ])
         ->assertForbidden()
         ->assertJson([
-            'message'=>'User does not have the right roles.'
+            'message' => 'User does not have the right roles.',
         ]);
 });
 
@@ -83,13 +83,13 @@ test('dinas_ketahanan_pangan role user cannot register user', function () {
     Sanctum::actingAs($user);
 
     $this->postJson(REGISTER_URL, [
-        'name'=>'usertes1',
-        'email'=>'email1@tes.com',
-        'password'=>'password'
+        'name' => 'usertes1',
+        'email' => 'email1@tes.com',
+        'password' => 'password',
     ])
         ->assertForbidden()
         ->assertJson([
-            'message'=>'User does not have the right roles.'
+            'message' => 'User does not have the right roles.',
         ]);
 });
 
@@ -98,24 +98,24 @@ test('unsigned role user cannot register user', function () {
     Sanctum::actingAs($user);
 
     $this->postJson(REGISTER_URL, [
-        'name'=>'usertes1',
-        'email'=>'email1@tes.com',
-        'password'=>'password'
+        'name' => 'usertes1',
+        'email' => 'email1@tes.com',
+        'password' => 'password',
     ])
         ->assertForbidden()
         ->assertJson([
-            'message'=>'User does not have the right roles.'
+            'message' => 'User does not have the right roles.',
         ]);
 });
 
 test('unaunthicated user cannot register user', function () {
     $this->postJson(REGISTER_URL, [
-        'name'=>'usertes2',
-        'email'=>'email2@tes.com',
-        'password'=>'password'
+        'name' => 'usertes2',
+        'email' => 'email2@tes.com',
+        'password' => 'password',
     ])
         ->assertUnauthorized()
         ->assertJson([
-            'message'=>'Unauthenticated.'
+            'message' => 'Unauthenticated.',
         ]);
 });

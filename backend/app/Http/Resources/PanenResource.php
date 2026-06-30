@@ -15,23 +15,23 @@ class PanenResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            "id"=> $this->id,
-            "perkiraan_tonase"=> $this->perkiraan_tonase,
-            "tanggal_prakiraan_panen" => $this->tanggal_prakiraan_panen,
+            'id' => $this->id,
+            'perkiraan_tonase' => $this->perkiraan_tonase,
+            'tanggal_prakiraan_panen' => $this->tanggal_prakiraan_panen,
 
-            "komoditas" => $this->whenLoaded('komoditas', function () {
+            'komoditas' => $this->whenLoaded('komoditas', function () {
                 return [
-                    "id" => $this->komoditas->id,
-                    "nama_komoditas" => $this->komoditas->nama_komoditas,
+                    'id' => $this->komoditas->id,
+                    'nama_komoditas' => $this->komoditas->nama_komoditas,
                 ];
             }),
 
-            "user" => $this->whenLoaded('komoditas', function () {
+            'user' => $this->whenLoaded('komoditas', function () {
                 return [
-                    "id" => $this->user->id,
-                    "name" => $this->user->name,
+                    'id' => $this->user->id,
+                    'name' => $this->user->name,
                 ];
-            })
+            }),
         ];
     }
 }

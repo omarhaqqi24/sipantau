@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\PanenResource;
+use App\Models\Panen;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
-use App\Models\Panen;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
@@ -29,7 +29,7 @@ class PanenController extends Controller
 
     public function store(Request $request)
     {
-        
+
         $validated = $request->validate([
             'komoditas_id' => 'required|exists:komoditas,id',
 
@@ -47,12 +47,12 @@ class PanenController extends Controller
                     $record = Panen::updateOrCreate(
                         [
                             'komoditas_id' => $validated['komoditas_id'],
-                            'tanggal_prakiraan_panen' => $item['tanggal_prakiraan_panen']
+                            'tanggal_prakiraan_panen' => $item['tanggal_prakiraan_panen'],
                         ],
 
                         [
                             'perkiraan_tonase' => $item['perkiraan_tonase'],
-                            'user_id' => $request->user()->id
+                            'user_id' => $request->user()->id,
                         ]
                     );
 
@@ -62,10 +62,10 @@ class PanenController extends Controller
 
             $records = Panen::with([
                 'komoditas:id,nama_komoditas',
-                'user:id,name'
+                'user:id,name',
             ])->whereIn('id', $saveIds)->get();
 
-            return $this->success(PanenResource::collection($records),'Panen created successfully',201);
+            return $this->success(PanenResource::collection($records), 'Panen created successfully', 201);
         } catch (Throwable $e) {
             return $this->error($e->getMessage());
         }

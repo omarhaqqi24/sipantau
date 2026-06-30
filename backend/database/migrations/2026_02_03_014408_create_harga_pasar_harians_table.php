@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreignId('pasar_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
 
-            $table->unique(['komoditas_id','tanggal','pasar_id']);
+            $table->unique(['komoditas_id', 'tanggal', 'pasar_id']);
         });
     }
 
