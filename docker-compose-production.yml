@@ -52,7 +52,7 @@ services:
     environment:
       - WATCHPACK_POLLING=true
     env_file:
-      - ./frontend/.env
+      - ./frontend/.env.production
     networks:
       - sipantau-network
 
