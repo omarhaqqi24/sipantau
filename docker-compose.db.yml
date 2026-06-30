@@ -1,3 +1,5 @@
+name: sipantau-db
+
 services:
   mysql:
     image: mysql:8

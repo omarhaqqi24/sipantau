@@ -1,4 +1,4 @@
-# RENAME THIS FILE TO docker-compose.yml BEFORE RUNNING DOCKER COMPOSE COMMANDS
+name: sipantau-app
 
 services:
   backend:

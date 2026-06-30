@@ -1,3 +1,5 @@
+name: sipantau-app
+
 services:
 
   backend:
