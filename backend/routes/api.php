@@ -16,6 +16,11 @@ use App\Http\Controllers\PredictController;
 // })->middleware('auth:sanctum');
 
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/health', function() {
+    return response()->json([
+        'status' => 'ok'
+    ]);
+});
 
 Route::middleware('auth:sanctum')->group(function () {
 
