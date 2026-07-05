@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\PanenResource;
 use App\Models\Panen;
+use App\Services\ActivityLogger;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -12,6 +13,10 @@ use Throwable;
 class PanenController extends Controller
 {
     use ApiResponse;
+
+    public function __construct(
+        private ActivityLogger $activityLogger
+    ) {}
 
     public function index()
     {
@@ -64,6 +69,11 @@ class PanenController extends Controller
                 'komoditas:id,nama_komoditas',
                 'user:id,name',
             ])->whereIn('id', $saveIds)->get();
+
+            $this->activityLogger->log(
+                $request->user()->id,
+                'save_panen'
+            );
 
             return $this->success(PanenResource::collection($records), 'Panen created successfully', 201);
         } catch (Throwable $e) {

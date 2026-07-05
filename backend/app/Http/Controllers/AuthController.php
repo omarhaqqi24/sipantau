@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Services\ActivityLogger;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -11,6 +12,10 @@ use Illuminate\Validation\ValidationException;
 class AuthController extends Controller
 {
     use ApiResponse;
+
+    public function __construct(
+        private ActivityLogger $activityLogger
+    ) {}
 
     public function register(Request $request)
     {
@@ -28,6 +33,11 @@ class AuthController extends Controller
         ]);
 
         $user->assignRole($validated['role'] ?? 'user');
+
+        $this->activityLogger->log(
+            $user->id,
+            'register'
+        );
 
         return $this->success([
             'token' => $user->createToken('api-token')->plainTextToken,
@@ -49,6 +59,11 @@ class AuthController extends Controller
             ]);
         }
 
+        $this->activityLogger->log(
+            $user->id,
+            'login'
+        );
+
         return $this->success([
             'token' => $user->createToken('api-token')->plainTextToken,
         ], 'Login successful');
@@ -56,6 +71,13 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
+        $userId = $request->user()->id;
+
+        $this->activityLogger->log(
+            $userId,
+            'logout'
+        );
+
         $request->user()->tokens()->delete();
 
         return $this->success(null, 'Logged out successfully');

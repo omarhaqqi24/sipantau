@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\HargaPasarHarianResource;
 use App\Models\HargaPasarHarian;
+use App\Services\ActivityLogger;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -12,6 +13,10 @@ use Throwable;
 class HargaPasarHarianController extends Controller
 {
     use ApiResponse;
+
+    public function __construct(
+        private ActivityLogger $activityLogger
+    ) {}
 
     public function index()
     {
@@ -64,6 +69,11 @@ class HargaPasarHarianController extends Controller
                 'user',
                 'pasar',
             ])->whereIn('id', $saveIds)->get();
+
+            $this->activityLogger->log(
+                $request->user()->id,
+                'save_harga_pasar'
+            );
 
             return $this->success(
                 HargaPasarHarianResource::collection($records),

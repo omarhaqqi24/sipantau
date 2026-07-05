@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\KetersediaanHarianResource;
 use App\Models\KetersediaanHarian;
+use App\Services\ActivityLogger;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -12,6 +13,10 @@ use Throwable;
 class KetersediaanHarianController extends Controller
 {
     use ApiResponse;
+
+    public function __construct(
+        private ActivityLogger $activityLogger
+    ) {}
 
     public function index()
     {
@@ -67,6 +72,11 @@ class KetersediaanHarianController extends Controller
                 'komoditas:id,nama_komoditas',
                 'user:id,name',
             ])->whereIn('id', $saveIds)->get();
+
+            $this->activityLogger->log(
+                $request->user()->id,
+                'save_ketersediaan_harian'
+            );
 
             return $this->success(
                 KetersediaanHarianResource::collection($records),

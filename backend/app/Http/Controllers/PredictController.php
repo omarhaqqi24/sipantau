@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\HargaPasarHarian;
+use App\Services\ActivityLogger;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -11,6 +12,10 @@ use Throwable;
 class PredictController extends Controller
 {
     use ApiResponse;
+
+    public function __construct(
+        private ActivityLogger $activityLogger
+    ) {}
 
     public function index(Request $request)
     {
@@ -109,6 +114,11 @@ class PredictController extends Controller
                     'today' => $rows[9]->tanggal,
                 ],
             ];
+
+            $this->activityLogger->log(
+                $request->user()->id,
+                'view_prediksi'
+            );
 
             return $this->success($result, 'Prediksi Harga Berhasil');
         } catch (Throwable $e) {
