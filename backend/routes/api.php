@@ -23,12 +23,6 @@ Route::get('/health', function () {
     ]);
 });
 
-// User Activity
-Route::get('/activities', [UserActivityController::class, 'index']);
-Route::get('/activities/summary', [UserActivityController::class, 'summary']);
-Route::get('/activities/user/{user}', [UserActivityController::class, 'byUser']);
-Route::get('/activities/period', [UserActivityController::class, 'period']);
-
 Route::middleware('auth:sanctum')->group(function () {
 
     // Authentication
@@ -62,6 +56,12 @@ Route::middleware('auth:sanctum')->group(function () {
         ->middleware('permission:view_prediksi');
 
     Route::middleware('role:admin')->group(function () {
+        // User Activity
+        Route::get('/activities', [UserActivityController::class, 'index']);
+        Route::get('/activities/summary', [UserActivityController::class, 'summary']);
+        Route::get('/activities/user/{user}', [UserActivityController::class, 'byUser']);
+        Route::get('/activities/period', [UserActivityController::class, 'period']);
+        
         // Register
         Route::post('/register', [AuthController::class, 'register']);
 

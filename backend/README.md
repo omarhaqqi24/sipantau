@@ -183,6 +183,101 @@ Pilihan role yang ada: <i>admin, dinas_pertanian, dinas_perdagangan, dinas_ketah
 </li>
 <hr>
 
+<!-- USER ACTIVITY -->
+<h3>User Activity</h3>
+
+<p style="color: red">
+Seluruh endpoint User Activity hanya dapat diakses oleh <b>Admin</b>.
+</p>
+
+<li>
+http://sipantau-simdacloud.id/api/activities
+[<span style="color: cyan"><b>GET</b></span>]
+
+Mengambil daftar seluruh aktivitas user.
+
+Query Parameter (optional):
+
+```
+?page=1
+```
+
+</li>
+
+<li>
+http://sipantau-simdacloud.id/api/activities/summary
+[<span style="color: cyan"><b>GET</b></span>]
+
+Mengambil ringkasan aktivitas pengguna.
+
+Response:
+
+```
+{
+    "total": {
+        "activity": 120,
+        "user_login": 10
+    },
+    "today": {
+        "activity": 15,
+        "user_login": {
+            "total": 3,
+            "users": [
+                {
+                    "id": 1,
+                    "name": "admin",
+                    "login_count": 2
+                },
+                {
+                    "id": 2,
+                    "name": "dinas_pertanian",
+                    "login_count": 1
+                }
+            ]
+        }
+    }
+}
+```
+
+</li>
+
+<li>
+http://sipantau-simdacloud.id/api/activities/user/{user_id}
+[<span style="color: cyan"><b>GET</b></span>]
+
+Mengambil riwayat aktivitas berdasarkan user.
+
+Contoh:
+
+```
+http://sipantau-simdacloud.id/api/activities/user/3
+```
+
+</li>
+
+<li>
+http://sipantau-simdacloud.id/api/activities/period
+[<span style="color: cyan"><b>GET</b></span>]
+
+Mengambil aktivitas berdasarkan periode.
+
+Query Parameter:
+
+```
+start_date=2026-07-01
+end_date=2026-07-10
+```
+
+Contoh:
+
+```
+http://sipantau-simdacloud.id/api/activities/period?start_date=2026-07-01&end_date=2026-07-10
+```
+
+</li>
+
+<hr>
+
 ## Hak Akses untuk Masing-Masing Role
 
 ### Admin
