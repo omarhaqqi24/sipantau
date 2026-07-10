@@ -8,6 +8,7 @@ use App\Http\Controllers\KomoditasController;
 use App\Http\Controllers\PanenController;
 use App\Http\Controllers\PasarController;
 use App\Http\Controllers\PredictController;
+use App\Http\Controllers\UserActivityController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,6 +22,12 @@ Route::get('/health', function () {
         'status' => 'ok',
     ]);
 });
+
+// User Activity
+Route::get('/activities', [UserActivityController::class, 'index']);
+Route::get('/activities/summary', [UserActivityController::class, 'summary']);
+Route::get('/activities/user/{user}', [UserActivityController::class, 'byUser']);
+Route::get('/activities/period', [UserActivityController::class, 'period']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
