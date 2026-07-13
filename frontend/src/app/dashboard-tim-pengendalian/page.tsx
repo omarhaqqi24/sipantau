@@ -122,10 +122,14 @@ export default function DashboardTimPenanggulangan() {
   }
 
   const handleCheckHarga = () => {
-    // Jika sudah login, langsung ke dashboard sesuai role
     if (isSessionValid()) {
       const role = getUserRole()
       if (role) {
+        // Admin punya dua dashboard — tampilkan halaman pilih dashboard
+        if (role === 'admin') {
+          router.push('/login-sebagai')
+          return
+        }
         router.push(getDashboardByRole(role))
         return
       }

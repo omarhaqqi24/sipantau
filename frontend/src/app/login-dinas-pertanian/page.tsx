@@ -1,10 +1,10 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { HiArrowLeft } from 'react-icons/hi'
 import { HiCheckCircle, HiXCircle } from 'react-icons/hi'
-import { saveSession, getDashboardByRole } from '@/lib/auth'
+import { saveSession, getDashboardByRole, isSessionValid } from '@/lib/auth'
 
 export default function LoginDinasPertanian() {
   const router = useRouter()
@@ -13,6 +13,13 @@ export default function LoginDinasPertanian() {
   const [isLoading, setIsLoading] = useState(false)
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({})
   const [popup, setPopup] = useState<{ type: 'success' | 'error'; message: string; errorType?: 'credentials' | 'network' | 'timeout' | 'server' } | null>(null)
+
+  // Jika sudah login, langsung redirect ke dashboard Dinas
+  useEffect(() => {
+    if (isSessionValid()) {
+      router.replace('/dashboard-dinas-pertanian')
+    }
+  }, [router])
 
   const validate = () => {
     const newErrors: { email?: string; password?: string } = {}
@@ -64,6 +71,14 @@ export default function LoginDinasPertanian() {
             })
             const meData = await meRes.json()
             if (meData?.role) role = meData.role
+
+            // Check if admin
+            const adminCheckRes = await fetch('/api/activities/summary', {
+              headers: { 'Authorization': `Bearer ${token}` }
+            })
+            if (adminCheckRes.ok) {
+              role = 'admin'
+            }
           } catch {
             console.warn('[Login] Gagal fetch role, menggunakan default')
           }

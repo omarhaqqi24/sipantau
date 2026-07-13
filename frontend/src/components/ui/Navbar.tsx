@@ -1,8 +1,8 @@
 "use client"
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { HiMenu, HiX, HiLogout, HiChevronDown } from 'react-icons/hi'
-import { logout, isSessionValid, clearAllStorage } from '@/lib/auth'
+import { HiMenu, HiX, HiLogout, HiChevronDown, HiSwitchHorizontal } from 'react-icons/hi'
+import { logout, isSessionValid, clearAllStorage, getUserRole } from '@/lib/auth'
 
 interface UserData {
   name: string
@@ -23,10 +23,8 @@ export default function Navbar() {
     if (isSessionValid()) {
       setIsLoggedIn(true)
     } else {
-      // Jika ada token tapi sudah expired, hapus auth data saja (bukan selectedMarket)
       const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null
       if (token) {
-        // Ada token tapi expired - clear auth only
         clearAllStorage()
       }
       setIsLoggedIn(false)
@@ -38,9 +36,20 @@ export default function Navbar() {
     if (!isLoggedIn) return
     fetch('/api/me')
       .then(res => res.ok ? res.json() : null)
-      .then(data => {
+      .then(async data => {
         if (data && (data.name || data.email)) {
+          // Fallback role check for admin without modifying backend
+          try {
+            const adminCheck = await fetch('/api/activities/summary')
+            if (adminCheck.ok) {
+              data.role = 'admin'
+            }
+          } catch (e) {}
+
           setUser(data)
+          if (data.role) {
+            localStorage.setItem('user_role', data.role)
+          }
         }
       })
       .catch(() => {})
@@ -105,6 +114,16 @@ export default function Navbar() {
                   <p className="text-sm font-semibold text-gray-800 truncate">{displayName}</p>
                   <p className="text-xs text-gray-400 truncate">{user?.email || ''}</p>
                 </div>
+                {/* Ganti Dashboard - hanya tampil untuk role admin */}
+                {isLoggedIn && (getUserRole() === 'admin' || user?.role === 'admin') && (
+                  <button
+                    onClick={() => { setDropdownOpen(false); router.push('/login-sebagai') }}
+                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#456882] hover:bg-[#eef4f7] transition-colors"
+                  >
+                    <HiSwitchHorizontal size={16} />
+                    Ganti Dashboard
+                  </button>
+                )}
                 <button
                   onClick={() => { setDropdownOpen(false); logout(router) }}
                   className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
@@ -164,7 +183,17 @@ export default function Navbar() {
 
             {/* Logout di Mobile Menu - hanya tampil jika login */}
             {isLoggedIn && (
-              <div className="mt-auto pt-4 border-t border-gray-200">
+              <div className="mt-auto pt-4 border-t border-gray-200 flex flex-col gap-1">
+                {/* Ganti Dashboard - hanya tampil untuk role admin */}
+                {isLoggedIn && (getUserRole() === 'admin' || user?.role === 'admin') && (
+                  <button
+                    onClick={() => { setMenuOpen(false); router.push('/login-sebagai') }}
+                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-[#456882] font-medium hover:bg-[#eef4f7] transition-colors"
+                  >
+                    <HiSwitchHorizontal size={18} />
+                    Ganti Dashboard
+                  </button>
+                )}
                 <button
                   onClick={() => { setMenuOpen(false); logout(router) }}
                   className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 font-medium hover:bg-red-50 transition-colors"

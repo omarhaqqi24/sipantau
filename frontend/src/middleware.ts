@@ -20,8 +20,9 @@ const PROTECTED_ROUTES = [
 ]
 
 // Route login yang tidak boleh diakses jika sudah login
+// Catatan: /login-sebagai TIDAK dimasukkan sini, agar admin bisa akses
+// PILIH DASHBOARD dari halaman mana saja. Client-side page.tsx yang handle routing.
 const LOGIN_ROUTES = [
-  '/login-sebagai',
   '/login-dinas-pertanian',
   '/login-tim-pengendalian',
 ]
@@ -85,8 +86,11 @@ export const config = {
     '/rekomendasi/:path*',
     '/price-chart/:path*',
     '/pasar/:path*',
+    '/login-sebagai',
     '/login-sebagai/:path*',
+    '/login-dinas-pertanian',
     '/login-dinas-pertanian/:path*',
+    '/login-tim-pengendalian',
     '/login-tim-pengendalian/:path*',
   ],
 }

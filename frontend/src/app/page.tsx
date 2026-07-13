@@ -3,7 +3,9 @@
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { HiMenu, HiX, HiLogout, HiChevronDown } from 'react-icons/hi'
+import { MdHistory } from 'react-icons/md'
 import { logout, isSessionValid, clearAllStorage } from '@/lib/auth'
+import ActivityLogModal from '@/components/ActivityLogModal'
 
 interface UserData {
   name: string
@@ -17,6 +19,7 @@ export default function LandingPage() {
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [user, setUser] = useState<UserData | null>(null)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [activityLogOpen, setActivityLogOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   // Cek session validity saat mount
@@ -37,9 +40,20 @@ export default function LandingPage() {
     if (!isLoggedIn) return
     fetch('/api/me')
       .then(res => res.ok ? res.json() : null)
-      .then(data => {
+      .then(async data => {
         if (data && (data.name || data.email)) {
+          // Fallback role check for admin without modifying backend
+          try {
+            const adminCheck = await fetch('/api/activities/summary')
+            if (adminCheck.ok) {
+              data.role = 'admin'
+            }
+          } catch (e) {}
+
           setUser(data)
+          if (data.role) {
+            localStorage.setItem('user_role', data.role)
+          }
         }
       })
       .catch(() => {})
@@ -236,15 +250,34 @@ export default function LandingPage() {
             #PrediksiHargaHariEsok,IntervensiLebihCepat
           </p>
 
-          {/* Mulai Button */}
-          <button
-            onClick={() => router.push('/dashboard-tim-pengendalian')}
-            className="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold px-8 sm:px-10 md:px-14 py-2.5 sm:py-3 rounded-full text-sm sm:text-base md:text-lg transition transform hover:scale-105 shadow-2xl"
-          >
-            Mulai
-          </button>
+          {/* Action Buttons */}
+          <div className="flex items-center gap-3 flex-wrap">
+            <button
+              onClick={() => router.push('/dashboard-tim-pengendalian')}
+              className="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold px-8 sm:px-10 md:px-14 py-2.5 sm:py-3 rounded-full text-sm sm:text-base md:text-lg transition transform hover:scale-105 shadow-2xl"
+            >
+              Mulai
+            </button>
+
+            {/* Log Aktivitas Button - tampil jika sudah login sebagai admin */}
+            {isLoggedIn && (typeof window !== 'undefined' && localStorage.getItem('user_role') === 'admin' || user?.role === 'admin') && (
+              <button
+                onClick={() => setActivityLogOpen(true)}
+                className="flex items-center gap-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white font-semibold px-6 sm:px-8 py-2.5 sm:py-3 rounded-full text-sm sm:text-base transition transform hover:scale-105 shadow-xl border border-white/30"
+              >
+                <MdHistory size={18} />
+                Log Aktivitas
+              </button>
+            )}
+          </div>
         </div>
       </main>
+
+      {/* Activity Log Modal */}
+      <ActivityLogModal
+        isOpen={activityLogOpen}
+        onClose={() => setActivityLogOpen(false)}
+      />
 
       <style jsx>{`
         @keyframes fadeIn {
