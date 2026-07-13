@@ -93,7 +93,22 @@ export function clearAllStorage() {
 /**
  * Menghapus semua data autentikasi dan redirect ke halaman awal
  */
-export function logout(router: AppRouterInstance) {
+export async function logout(router: AppRouterInstance) {
+  const token = localStorage.getItem('auth_token')
+  if (token) {
+    try {
+      await fetch('/api/logout', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/json'
+        }
+      })
+    } catch (error) {
+      console.error('[Auth] Error calling logout API:', error)
+    }
+  }
+
   clearAllStorage()
   console.log('[Auth] Logout berhasil')
   router.push('/')
