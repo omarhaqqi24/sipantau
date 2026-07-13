@@ -18,7 +18,9 @@ class UserActivityController extends Controller
     {
         $data = UserActivity::with([
             'user:id,name'
-        ])->paginate(20);
+        ])
+            ->latest()
+            ->paginate(20);
         
         return $this->success(UserActivityResource::collection($data), 'User Activities fetched successfully');
     }
