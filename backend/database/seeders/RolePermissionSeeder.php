@@ -44,5 +44,10 @@ class RolePermissionSeeder extends Seeder
         Role::findByName('dinas_pertanian')->syncPermissions(['view_komoditas', 'create_harga_petani', 'create_panen']);
         Role::findByName('dinas_perdagangan')->syncPermissions(['view_komoditas', 'create_harga_pasar']);
         Role::findByName('dinas_ketahanan_pangan')->syncPermissions(['create_ketersediaan_harian', 'view_komoditas']);
+
+        $role_tpid = Role::findByName('tpid');
+        if (!$role_tpid->hasPermissionTo('view_komoditas')) {
+            $role_tpid->givePermissionTo('view_komoditas');
+        }
     }
 }
