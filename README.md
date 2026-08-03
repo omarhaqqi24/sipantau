@@ -195,7 +195,7 @@ Laravel uses Sanctum bearer tokens and Spatie permissions. Apart from `POST /api
 All paths are prefixed with `/api`. Write endpoints accept grouped `items` arrays, allowing several dated values in one request.
 
 | Endpoint | Method | Access | Purpose |
-| --- | --- | --- |
+| --- | --- | --- | --- |
 | `/health` | GET | Public | API health check |
 | `/login` | POST | Public | Obtain a Sanctum token |
 | `/logout`, `/me` | POST, GET | Authenticated | End session / inspect current user |
