@@ -199,14 +199,14 @@ All paths are prefixed with `/api`. Write endpoints accept grouped `items` array
 | `/health` | GET | Public | API health check |
 | `/login` | POST | Public | Obtain a Sanctum token |
 | `/logout`, `/me` | POST, GET | Authenticated | End session / inspect current user |
-| `/komoditas` | GET / POST | Permission / admin | List or create commodities |
+| `/komoditas` | GET / POST | Admin, semua dinas, TPID | List or create commodities |
 | `/pasar` | GET / POST | Admin | List or create markets |
-| `/harga-petani` | POST / GET | Agriculture / admin | Write / read farmer prices |
-| `/harga-pasar` | POST / GET | Trade / admin | Write / read market prices |
-| `/panen` | POST / GET | Agriculture / admin | Write / read harvest forecasts |
-| `/ketersediaan` | POST / GET | Food security / admin | Write / read availability, demand, and balance |
+| `/harga-petani` | POST / GET | Dinas pertanian dan admin | Write / read farmer prices |
+| `/harga-pasar` | POST / GET | Dinas perdagangan dan admin | Write / read market prices |
+| `/panen` | POST / GET | Dinas Pertanian dan admin | Write / read harvest forecasts |
+| `/ketersediaan` | POST / GET | Dinas ketersediaan pangan dan admin | Write / read availability, demand, and balance |
 | `/predict?pasar_id=&komoditas_id=` | GET | TPID | Return recent values and a 3-day forecast |
-| `/activities`, `/activities/summary`, `/activities/period`, `/activities/user/{user}` | GET | Activity-report permission | Review user activity |
+| `/activities`, `/activities/summary`, `/activities/period`, `/activities/user/{user}` | GET | Admin dan TPID | Review user activity |
 
 See [backend/README.md](backend/README.md) for request body examples. [backend/routes/api.php](backend/routes/api.php) is the authoritative endpoint and access-control reference.
 
