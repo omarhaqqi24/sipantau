@@ -95,7 +95,9 @@ export default function LoginTimPenanggulangan() {
               headers: { 'Authorization': `Bearer ${token}` }
             })
             if (adminCheckRes.ok) {
-              role = 'admin'
+              if (meData?.name !== 'tpid') {
+                role = 'admin'
+              }
             }
           } catch {
             console.warn('[Login Tim Pengendalian] Gagal fetch role, menggunakan default')

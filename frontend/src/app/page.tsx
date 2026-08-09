@@ -46,7 +46,9 @@ export default function LandingPage() {
           try {
             const adminCheck = await fetch('/api/activities/summary')
             if (adminCheck.ok) {
-              data.role = 'admin'
+              if (data.name !== 'tpid') {
+                data.role = 'admin'
+              }
             }
           } catch (e) {}
 

@@ -66,6 +66,21 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(dashboardUrl)
   }
 
+  // 3. Role-based protection for specific dashboards
+  if (pathname.startsWith('/dashboard-dinas-pertanian')) {
+    if (!DINAS_ROLES.includes(role)) {
+      const dashboardUrl = new URL(getDashboardByRole(role), req.url)
+      return NextResponse.redirect(dashboardUrl)
+    }
+  }
+
+  if (pathname.startsWith('/dashboard-tpid')) {
+    if (role !== 'admin' && role !== 'tpid') {
+      const dashboardUrl = new URL(getDashboardByRole(role), req.url)
+      return NextResponse.redirect(dashboardUrl)
+    }
+  }
+
   return NextResponse.next()
 }
 
