@@ -54,13 +54,16 @@ Route::middleware('auth:sanctum')->group(function () {
     // Prediksi Harga Pasar
     Route::get('/predict', [PredictController::class, 'index'])
         ->middleware('permission:view_prediksi');
-
-    Route::middleware('role:admin')->group(function () {
-        // User Activity
+    
+    // User Activity
+    Route::middleware('permission:view_user_activity')->group(function () {
         Route::get('/activities', [UserActivityController::class, 'index']);
         Route::get('/activities/summary', [UserActivityController::class, 'summary']);
         Route::get('/activities/user/{user}', [UserActivityController::class, 'byUser']);
         Route::get('/activities/period', [UserActivityController::class, 'period']);
+    });
+
+    Route::middleware('role:admin')->group(function () {
         
         // Register
         Route::post('/register', [AuthController::class, 'register']);

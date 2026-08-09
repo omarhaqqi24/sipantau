@@ -6,7 +6,7 @@ use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
-class PredictPermissionSeeder extends Seeder
+class UserActivityPermissionSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,13 +15,12 @@ class PredictPermissionSeeder extends Seeder
     {
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        Permission::firstOrCreate(['name' => 'view_prediksi', 'guard_name' => 'web']);
-        Role::firstOrCreate(['name' => 'tpid', 'guard_name' => 'web']);
-
+        Permission::firstOrCreate(['name' => 'view_user_activity', 'guard_name' => 'web']);
+        
         $role = Role::findByName('tpid');
 
-        if (!$role->hasPermissionTo('view_prediksi')) {
-            $role->givePermissionTo('view_prediksi');
+        if (!$role->hasPermissionTo('view_user_activity')) {
+            $role->givePermissionTo('view_user_activity');
         }
     }
 }
