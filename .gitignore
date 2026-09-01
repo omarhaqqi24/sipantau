@@ -1,1 +1,4 @@
 .env
+# Let's Encrypt ACME challenge files
+certbot/www/*
+!certbot/www/.gitkeep
