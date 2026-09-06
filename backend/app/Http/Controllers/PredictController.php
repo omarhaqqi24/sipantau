@@ -37,7 +37,7 @@ class PredictController extends Controller
                             ->on(
                                 'harga_pasar_harians.komoditas_id',
                                 '=',
-                                'harga_pasar_harians.komoditas_id'
+                                'ketersediaan_harians.komoditas_id'
                             );
                     }
                 )

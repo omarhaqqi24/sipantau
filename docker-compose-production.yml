@@ -21,7 +21,7 @@ services:
       - "443:443"
     volumes:
       - ./backend:/var/www
-      - ./backend/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./backend/nginx-production.conf:/etc/nginx/conf.d/default.conf
       - ./certbot/www:/var/www/certbot
       - /etc/letsencrypt:/etc/letsencrypt:ro
     depends_on:
