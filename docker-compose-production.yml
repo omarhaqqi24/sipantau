@@ -19,6 +19,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    restart: unless-stopped
     volumes:
       - ./backend:/var/www
       - ./backend/nginx-production.conf:/etc/nginx/conf.d/default.conf
@@ -36,6 +37,7 @@ services:
       extra_hosts:
       - "files.pythonhosted.org:151.101.0.223"
     container_name: ml-service
+    restart: unless-stopped
     volumes:
       - ./ml-service:/app
     networks:
