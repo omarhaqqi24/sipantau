@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { HiArrowLeft, HiCheckCircle } from 'react-icons/hi'
-import { isSessionValid, getUserRole, getDashboardByRole } from '@/lib/auth'
+import { isSessionValid, getUserRole, getDashboardByRole, SESSION_MAX_AGE } from '@/lib/auth'
 
 export default function LoginSelection() {
   const router = useRouter()
@@ -11,6 +11,13 @@ export default function LoginSelection() {
   const [checking, setChecking] = useState(true)
   const [alreadyLoggedIn, setAlreadyLoggedIn] = useState(false)
   const [userRole, setUserRole] = useState<string | null>(null)
+
+  // Update role di localStorage dan cookie, lalu navigate
+  const updateRoleAndNavigate = (newRole: string, path: string) => {
+    localStorage.setItem('user_role', newRole)
+    document.cookie = `user_role=${newRole}; path=/; max-age=${SESSION_MAX_AGE}; SameSite=Lax`
+    router.push(path)
+  }
 
   useEffect(() => {
     const saved = localStorage.getItem('selectedMarket')
@@ -86,7 +93,7 @@ export default function LoginSelection() {
         <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-10 sm:gap-12 md:gap-16 lg:gap-20 max-w-6xl w-full px-4 sm:px-8">
           {/* Dinas Pertanian */}
           <button
-            onClick={() => router.push('/dashboard-dinas-pertanian')}
+            onClick={() => updateRoleAndNavigate('admin', '/dashboard-dinas-pertanian')}
             className="relative bg-red-700 rounded-3xl sm:rounded-4xl shadow-[8px_8px_20px_rgba(0,0,0,0.5)] pt-16 sm:pt-24 md:pt-28 lg:pt-29 pb-6 sm:pb-4 md:pb-2 px-6 sm:px-6 md:px-8 flex flex-col items-center space-y-3 sm:space-y-6 md:space-y-8 w-[85%] sm:w-[20rem] md:w-[24rem] lg:w-[28rem] mx-auto sm:mx-0 hover:brightness-110 transition"
           >
             <img
@@ -102,7 +109,7 @@ export default function LoginSelection() {
 
           {/* Tim Pengendalian */}
           <button
-            onClick={() => router.push('/dashboard-tpid')}
+            onClick={() => updateRoleAndNavigate('tpid', '/dashboard-tpid')}
             className="relative bg-yellow-500 rounded-3xl sm:rounded-4xl shadow-[8px_8px_20px_rgba(0,0,0,0.5)] pt-16 sm:pt-24 md:pt-28 lg:pt-30 pb-8 sm:pb-10 md:pb-14 lg:pb-16 px-8 sm:px-12 md:px-20 lg:px-29 flex flex-col items-center space-y-3 sm:space-y-6 md:space-y-8 w-[85%] sm:w-[20rem] md:w-[24rem] lg:w-[28rem] mx-auto sm:mx-0 hover:brightness-110 transition"
           >
             <img

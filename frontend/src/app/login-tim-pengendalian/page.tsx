@@ -81,27 +81,9 @@ export default function LoginTimPenanggulangan() {
       if (response.ok && data.success) {
         const token = data?.data?.token || data?.token
         if (token) {
-          // Fetch user info untuk mendapatkan role
-          let role = 'tpid' // default role untuk halaman ini
-          try {
-            const meRes = await fetch('/api/me', {
-              headers: { 'Authorization': `Bearer ${token}` }
-            })
-            const meData = await meRes.json()
-            if (meData?.role) role = meData.role
-
-            // Check if admin
-            const adminCheckRes = await fetch('/api/activities/summary', {
-              headers: { 'Authorization': `Bearer ${token}` }
-            })
-            if (adminCheckRes.ok) {
-              if (meData?.name !== 'tpid') {
-                role = 'admin'
-              }
-            }
-          } catch {
-            console.warn('[Login Tim Pengendalian] Gagal fetch role, menggunakan default')
-          }
+          // Halaman ini khusus untuk TPID, selalu gunakan role 'tpid'
+          // agar redirect ke /dashboard-tpid
+          const role = 'tpid'
 
           // Simpan session dengan token, role, dan timestamp
           saveSession(token, role)

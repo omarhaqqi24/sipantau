@@ -36,22 +36,11 @@ export default function Navbar() {
     if (!isLoggedIn) return
     fetch('/api/me')
       .then(res => res.ok ? res.json() : null)
-      .then(async data => {
+      .then(data => {
         if (data && (data.name || data.email)) {
-          // Fallback role check for admin without modifying backend
-          try {
-            const adminCheck = await fetch('/api/activities/summary')
-            if (adminCheck.ok) {
-              if (data.name !== 'tpid') {
-                data.role = 'admin'
-              }
-            }
-          } catch (e) {}
-
+          // Gunakan role yang sudah tersimpan di localStorage (dari proses login)
+          // jangan di-override dari sini agar role tetap sesuai dashboard yang dipilih
           setUser(data)
-          if (data.role) {
-            localStorage.setItem('user_role', data.role)
-          }
         }
       })
       .catch(() => {})
